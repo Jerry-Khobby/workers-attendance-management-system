@@ -1,11 +1,11 @@
 
 import './App.css';
+import SignUpForm from './component/worker/signup';
 
 function App() {
   return (
-    <div className="App bg-blue-800">
-      <h3>Hello Baby</h3>
-
+    <div className="App">
+      <SignUpForm/>
     </div>
   );
 }
