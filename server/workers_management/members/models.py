@@ -1,5 +1,16 @@
 from django.db import models
-from django.utils.crypto import get_random_string
+""" from django.utils.crypto import get_random_string """
+import random
+
+
+
+
+# Function to generate random 10-digit ID
+def generate_random_id():
+    return random.randint(1000000000, 9999999999)  
+
+# Get the current ID value
+current_id = generate_random_id()
 
 class User(models.Model):
     first_name = models.CharField(max_length=255)
@@ -12,16 +23,10 @@ class User(models.Model):
     age = models.PositiveIntegerField()
     place_of_stay = models.CharField(max_length=255)
     previous_experience = models.TextField()
-    id = models.IntegerField(primary_key=True, unique=True)
+    id = models.IntegerField(primary_key=True, unique=True,default=current_id)
 
 
 
-
-    def save(self, *args, **kwargs):
-        # You can generate a random 10-digit number for id here if needed
-        if not self.id:
-             self.id = int(get_random_string(10, '0123456789'))
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
