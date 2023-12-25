@@ -22,7 +22,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className='flex flex-col items-center justify-center mt-16 h-full w-full'>
+    <div className='flex flex-col items-center justify-center mt-20 h-full w-full'>
     <div>
     <h2 className='font-bold text-2xl font-serif'>Login Page </h2>
   </div>
