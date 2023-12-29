@@ -12,7 +12,7 @@ class User(models.Model):
     email = models.EmailField(unique=True)
     telephone = models.CharField(max_length=15)
     password = models.CharField(max_length=128)
-    image = models.ImageField(upload_to='images/')
+    image = models.ImageField(upload_to='images/',required=False)
     date_of_birth = models.DateField()
     age = models.PositiveIntegerField()
     place_of_stay = models.CharField(max_length=255)
