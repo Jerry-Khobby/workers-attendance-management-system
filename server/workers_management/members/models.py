@@ -11,7 +11,7 @@ class User(models.Model):
     last_name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
     telephone = models.CharField(max_length=15)
-    password = models.CharField(max_length=255)
+    password = models.CharField(max_length=128)
     image = models.ImageField(upload_to='images/')
     date_of_birth = models.DateField()
     age = models.PositiveIntegerField()
