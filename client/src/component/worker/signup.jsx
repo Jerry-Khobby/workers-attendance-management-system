@@ -1,21 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 
 const SignUpForm = () => {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Add your form submission logic here
-        // Add your form submission logic here
+  const [passwordMatch, setPasswordMatch] = useState(true);
+  const handleSubmit = async (event) => {
 
+    event.preventDefault();
+    if (!passwordMatch) {
+      console.log('Passwords do not match. Please check and try again.');
+      return;
+    }
+
+    try {
+      // Make a POST request to your Django backend
+      const response = await fetch('http://127.0.0.1:8000/api/users/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...basicInfo,
+          ...additionalInfo,
+        }),
+      });
+
+      if (response.ok) {
+        console.log('Form submitted successfully!');
+        // Add any additional logic after a successful submission
+      } else {
+        console.error('Error submitting the form:', response.statusText);
+        // Handle the error as needed
+      }
+    } catch (error) {
+      console.error('Error:', error.message);
+      // Handle the error as needed
+    }
   };
 
   const [basicInfo, setBasicInfo] = useState({
     firstName: '',
     lastName: '',
     email: '',
-    telephone: '',
+    telePhone: '',
     password: '',
     confirmPassword: '',
     profilePicture: null,
@@ -26,10 +54,27 @@ const SignUpForm = () => {
     placeOfStay: '',
     previousExperience: '',
     acceptTerms: false,
+    age:''
   });
 
   const handleBasicInfoChange = (event) => {
     const { name, value } = event.target;
+      // Validate telephone number to be exactly 10 digits
+  if (name === 'telephone' && !/^\d{10}$/.test(value)) {
+    // Display an error message or handle it as needed
+    console.log('Invalid telephone number. Please enter exactly 10 digits.');
+    return;
+  }
+    setBasicInfo((prevInfo) => ({ ...prevInfo, [name]: value }));
+  };
+
+  const handlePasswordChange = (event) => {
+    const { name, value } = event.target;
+    const confirmPassword = basicInfo.confirmPassword;
+
+    // Check if passwords match
+    setPasswordMatch(confirmPassword === value);
+
     setBasicInfo((prevInfo) => ({ ...prevInfo, [name]: value }));
   };
 
@@ -77,7 +122,7 @@ const SignUpForm = () => {
             margin="normal"
             fullWidth
             required
-            name="lastname"
+            name="lastName"
             value={basicInfo.lastName}
             onChange={handleBasicInfoChange}
           />
@@ -98,8 +143,8 @@ const SignUpForm = () => {
             margin="normal"
             fullWidth
             type="tel"
-            name="telephone"
-            value={basicInfo.telephone}
+            name="telePhone"
+            value={basicInfo.telePhone}
             onChange={handleBasicInfoChange}
           />
             <TextField
@@ -111,7 +156,7 @@ const SignUpForm = () => {
               required
               name="password"
               value={basicInfo.password}
-              onChange={handleBasicInfoChange}
+              onChange={handlePasswordChange}
             />
             <TextField
               label="Confirm Password"
@@ -122,7 +167,7 @@ const SignUpForm = () => {
               required
               name="confirmPassword"
               value={basicInfo.confirmPassword}
-              onChange={handleBasicInfoChange}
+              onChange={handlePasswordChange}
             />
           {/* Image input field */}
           <TextField
@@ -176,6 +221,16 @@ const SignUpForm = () => {
               onChange={handleAdditionalInfoChange}
             />
             <TextField
+              label="Age"
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              rows={3}
+              name="age"
+              value={additionalInfo.age}
+              onChange={handleAdditionalInfoChange}
+            />
+            <TextField
               label="Place of Stay"
               variant="outlined"
               margin="normal"
@@ -199,10 +254,8 @@ const SignUpForm = () => {
             />
 
 
+
 <div>
-  <p>
-  "I agree to maintain the confidentiality of company information and not disclose any proprietary or sensitive data to external parties. This includes but is not limited to business strategies, financial information, and client details."
-  </p>
   <p>
   "I acknowledge and agree to adhere to the company's code of conduct. This includes treating all colleagues, clients, and stakeholders with respect and professionalism. I will conduct myself ethically and follow all applicable laws and regulations."
   </p>
