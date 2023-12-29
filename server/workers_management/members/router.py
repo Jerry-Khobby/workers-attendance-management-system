@@ -7,5 +7,5 @@ app_name='members'
 
 router=routers.SimpleRouter()
 
-router.register(r'users',UserListCreateView)
+router.register(r'users',UserListCreateView,basename='user')
 
