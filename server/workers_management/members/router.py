@@ -10,3 +10,9 @@ router=routers.DefaultRouter()
 
 router.register(r'users',UserListCreateView,basename='user-list-create')
 
+
+
+urlpatterns = [
+    path('api/', include(router.urls)),
+    # Add other URL patterns if needed
+]

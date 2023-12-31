@@ -2,33 +2,37 @@ from rest_framework import viewsets
 from .models import User
 from .serializers import UserSerializer
 from rest_framework.response import Response
-from rest_framework import status 
+from rest_framework import status
 from rest_framework.decorators import action
 from django.db.utils import IntegrityError
 from django.contrib.auth.hashers import make_password
 import base64
+from rest_framework.authentication import TokenAuthentication
+from rest_framework import permissions
+
 
 class UserListCreateView(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
-    @action(detail=True, methods=['post'])
+    @action(detail=False, methods=['post'])
     def action_post(self, request):
         # Check if the email already exists
         email_exists = User.objects.filter(email=request.data.get('email')).exists()
         if email_exists:
             return Response({'error': 'Email already exists, please try logging in'}, status=status.HTTP_401_UNAUTHORIZED)
-        
+
         # Hash the password using make_password
         password = request.data.get('password')
         hashed_password = make_password(password)
-        
+
         # Optionally hash the image using base64 encoding
-        if 'image' in request.data:
+        encoded_image = None
+        if 'image' in request.data and request.data['image']:
             image_data = request.data['image'].read()
             encoded_image = base64.b64encode(image_data).decode('utf-8')
-        else:
-            encoded_image = None
 
         # Create a user instance with hashed password and image
         user = User.objects.create(

@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import User
 from django.contrib.auth.hashers import make_password, check_password
 
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -20,7 +21,6 @@ class UserSerializer(serializers.ModelSerializer):
         else:
             #If image is not present or provided or empty 
             validated_data['image']=None
-
         return super(UserSerializer, self).create(validated_data)
 
     def validate_password(self, value):
