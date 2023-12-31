@@ -114,6 +114,8 @@ const handleSubmit = async (event) => {
 const [passwordMismatchError, setPasswordMismatchError] = useState('');
 const [telephoneLengthError, setTelephoneLengthError] = useState('');
 const [backendError, setBackendError] = useState('');
+// I have to catch the error with their responses 
+
 
 
   return (
