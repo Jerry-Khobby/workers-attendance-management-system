@@ -46,6 +46,7 @@ const handleChange = (event) => {
 
 const handleSubmit = async (event) => {
   event.preventDefault();
+
   // Check if passwords match
   if (formData.password !== formData.confirmPassword) {
     // Display error message or handle password mismatch as needed
@@ -59,7 +60,7 @@ const handleSubmit = async (event) => {
     last_name: formData.lastName,
     email: formData.email,
     telephone: formData.telePhone,
-    password: formData.confirmPassword,  // Send confirm password if they match
+    password: formData.confirmPassword,
     image: formData.profilePicture,
     date_of_birth: formData.dateOfBirth,
     age: formData.age,
@@ -68,32 +69,18 @@ const handleSubmit = async (event) => {
   };
 
   try {
-    // Send the data to the backend using fetch or your preferred HTTP library
-    const response = await fetch('http://127.0.0.1:8000/api/users/', {
-      method: 'POST',
+    const response = await axios.post('http://127.0.0.1:8000/api/users/action_post/', userData, {
       headers: {
+        'Authorization': `Token ffaf53452dda08c2013dc5a89601dabffe05c185`,  // Replace with your actual token
         'Content-Type': 'application/json',
-        'X-CSRFToken': document.cookie.match(/csrftoken=([^;]*)/)[1],
       },
-      body: JSON.stringify(userData),
     });
 
-    if (response.ok) {
+    if (response.status === 201) {
       console.log('User created successfully');
       // Reset the form after successful submission
       setFormData({
-        firstName: '',
-        lastName: '',
-        email: '',
-        telePhone: '',
-        password: '',
-        confirmPassword: '',
-        profilePicture: null,
-        dateOfBirth: '',
-        age: '',
-        placeOfStay: '',
-        previousExperience: '',
-        acceptTerms: false,
+        // ... your form reset values
       });
     } else {
       console.error('Error creating user:', response.statusText);
@@ -104,6 +91,7 @@ const handleSubmit = async (event) => {
     // Handle errors or display error messages as needed
   }
 };
+
 
   return (
     <div className='flex flex-col items-center justify-center mt-5 h-full w-full'>
