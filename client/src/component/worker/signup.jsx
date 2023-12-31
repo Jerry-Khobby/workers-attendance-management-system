@@ -46,11 +46,19 @@ const handleChange = (event) => {
 
 const handleSubmit = async (event) => {
   event.preventDefault();
+      // Reset error messages
+      setPasswordMismatchError('');
+      setTelephoneLengthError('');
+      setBackendError('');
 
   // Check if passwords match
   if (formData.password !== formData.confirmPassword) {
     // Display error message or handle password mismatch as needed
-    console.error('Passwords do not match');
+    setPasswordMismatchError('Passwords do not match');
+    return;
+  }
+  if (formData.telePhone.length > 10) {
+    setTelephoneLengthError('Telephone number should not exceed 10 digits');
     return;
   }
 
@@ -84,13 +92,28 @@ const handleSubmit = async (event) => {
       });
     } else {
       console.error('Error creating user:', response.statusText);
-      // Handle errors or display error messages as needed
+      if (response.data && response.data.error) {
+        // Check for the specific error message
+        if (response.data.error.includes('User with the same email already exists')) {
+          setBackendError('An account with this email already exists. Please login.');
+        } else {
+          setBackendError(response.data.error);
+        }
+      } else {
+        setBackendError('Error creating user. Please try again.');
+      }
     }
   } catch (error) {
     console.error('Error creating user:', error.message);
     // Handle errors or display error messages as needed
+    setBackendError('Error creating user. Please try again.',error.message);
   }
 };
+
+
+const [passwordMismatchError, setPasswordMismatchError] = useState('');
+const [telephoneLengthError, setTelephoneLengthError] = useState('');
+const [backendError, setBackendError] = useState('');
 
 
   return (
@@ -112,6 +135,10 @@ const handleSubmit = async (event) => {
       >
         <form onSubmit={handleSubmit}>
           {/* Other form fields */}
+          {/** I want to display an error message from the backend and frontend here  */}
+          {passwordMismatchError && <p className="text-red-500">{passwordMismatchError}</p>}
+          {telephoneLengthError && <p className="text-red-500">{telephoneLengthError}</p>}
+          {backendError && <p className="text-red-500">{backendError}</p>}
           <TextField
             label="First Name"
             variant="outlined"
