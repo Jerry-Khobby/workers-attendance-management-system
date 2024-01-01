@@ -46,14 +46,14 @@ const handleChange = (event) => {
 
 const handleSubmit = async (event) => {
   event.preventDefault();
-      // Reset error messages
-      setPasswordMismatchError('');
-      setTelephoneLengthError('');
-      setBackendError('');
+  
+  // Reset error messages
+  setPasswordMismatchError('');
+  setTelephoneLengthError('');
+  setBackendError('');
 
   // Check if passwords match
   if (formData.password !== formData.confirmPassword) {
-    // Display error message or handle password mismatch as needed
     setPasswordMismatchError('Passwords do not match');
     return;
   }
@@ -79,7 +79,7 @@ const handleSubmit = async (event) => {
   try {
     const response = await axios.post('http://127.0.0.1:8000/api/users/action_post/', userData, {
       headers: {
-        'Authorization': `Token ffaf53452dda08c2013dc5a89601dabffe05c185`,  // Replace with your actual token
+        'Authorization': `Token ffaf53452dda08c2013dc5a89601dabffe05c185`,
         'Content-Type': 'application/json',
       },
     });
@@ -92,23 +92,20 @@ const handleSubmit = async (event) => {
       });
     } else {
       console.error('Error creating user:', response.statusText);
-      if (response.data && response.data.error) {
-        // Check for the specific error message
-        if (response.data.error.includes('User with the same email already exists')) {
-          setBackendError('An account with this email already exists. Please login.');
-        } else {
-          setBackendError(response.data.error);
-        }
+      if (response.status === 401) {
+        setBackendError('An account with this email already exists. Please login.');
+      } else if (response.data && response.data.error) {
+        setBackendError(response.data.error);
       } else {
         setBackendError('Error creating user. Please try again.');
       }
     }
   } catch (error) {
     console.error('Error creating user:', error.message);
-    // Handle errors or display error messages as needed
-    setBackendError('Error creating user. Please try again.',error.message);
+    setBackendError('Error creating user. Please try again.', error.message);
   }
 };
+
 
 
 const [passwordMismatchError, setPasswordMismatchError] = useState('');
