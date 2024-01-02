@@ -20,9 +20,10 @@ class UserListCreateView(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'])
     def action_post(self, request):
         # Check if the email already exists
-        email_exists = User.objects.filter(email=request.data.get('email')).exists()
+        email_exists = User.objects.filter(email__iexact=request.data.get('email')).exists()
         if email_exists:
-            return Response({'error': 'Email already exists, please try logging in'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'error': 'Email already exists, please try logging in'}, status=status.HTTP_400_BAD_REQUEST)
+
 
         # Hash the password using make_password
         password = request.data.get('password')
@@ -33,7 +34,6 @@ class UserListCreateView(viewsets.ModelViewSet):
         if 'image' in request.data and request.data['image']:
             image_data = request.data['image'].read()
             encoded_image = base64.b64encode(image_data).decode('utf-8')
-
         # Create a user instance with hashed password and image
         user = User.objects.create(
             first_name=request.data.get('first_name'),
