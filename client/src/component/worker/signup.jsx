@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
-import axios from "axios";
+//import axios from "axios";
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
@@ -42,6 +42,7 @@ const SignUpForm = () => {
     }));
   };
 
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formDataForSubmission = new FormData();
@@ -49,45 +50,48 @@ const SignUpForm = () => {
     setPasswordMismatchError("");
     setTelephoneLengthError("");
     setBackendError("");
-
+  
     // Check if passwords match
     if (formData.password !== formData.confirmPassword) {
       setPasswordMismatchError("Passwords do not match");
       return;
     }
-
+  
     if (formData.telePhone && formData.telePhone.length > 10) {
       setTelephoneLengthError("Telephone number should not exceed 10 digits");
       return;
     }
-      // Append all form fields except image
-  formDataForSubmission.append("first_name",formData.firstName)
-  formDataForSubmission.append("last_name",formData.lastName)
-  formDataForSubmission.append("email",formData.email)
-  formDataForSubmission.append("telephone",formData.telePhone)
-  formDataForSubmission.append("password",formData.password)
-  formDataForSubmission.append("date_of_birth",formData.dateOfBirth)
-  formDataForSubmission.append("age",formData.age)
-  formDataForSubmission.append("previous_experience",formData.previousExperience)
-  formDataForSubmission.append("place_of_stay",formData.placeOfStay)
-  // Append the image separately
-  if(formData.image){
-    formDataForSubmission.append('image', formData.image);
-  }
-
-
+    // Append all form fields except image
+    formDataForSubmission.append("first_name", formData.firstName);
+    formDataForSubmission.append("last_name", formData.lastName);
+    formDataForSubmission.append("email", formData.email);
+    formDataForSubmission.append("telephone", formData.telePhone);
+    formDataForSubmission.append("password", formData.password);
+    formDataForSubmission.append("date_of_birth", formData.dateOfBirth);
+    formDataForSubmission.append("age", formData.age);
+    formDataForSubmission.append(
+      "previous_experience",
+      formData.previousExperience
+    );
+    formDataForSubmission.append("place_of_stay", formData.placeOfStay);
+    // Append the image separately
+    if (formData.image) {
+      formDataForSubmission.append("image", formData.image);
+    }
+  
     try {
-      const response = await axios.post(
+      const response = await fetch(
         "http://127.0.0.1:8000/api/users/action_post/",
-        formDataForSubmission,
         {
+          method: "POST",
           headers: {
             Authorization: `Token ffaf53452dda08c2013dc5a89601dabffe05c185`,
-            "content-type": "multipart/form-data",
+            'Content-Type': 'multipart/form-data',
           },
+          body: formDataForSubmission,
         }
       );
-
+  
       if (response.status === 201) {
         console.log("User created successfully");
         // Reset the form after successful submission
@@ -97,7 +101,7 @@ const SignUpForm = () => {
           email: "",
           telePhone: "",
           password: "",
-          confirmPassword:"",
+          confirmPassword: "",
           image: null,
           dateOfBirth: "",
           age: "",
@@ -111,17 +115,19 @@ const SignUpForm = () => {
           setBackendError(
             "An account with this email already exists. Please login."
           );
-        } else if (response.data && response.data.error) {
-          setBackendError(response.data.error);
-        } else {
-          setBackendError("Error creating user. Please try again.");
+          console.log("Email is already in use");
+        } else if (response.status===400){
+          setBackendError("An account with this email already exists. Please login.");
+        }else{
+        setBackendError("Error creating user. Please try again.");
+        } 
         }
-      }
     } catch (error) {
       console.error("Error creating user:", error.message);
       setBackendError("Error creating user. Please try again.");
     }
   };
+  
 
   return (
     <div className="flex flex-col items-center justify-center mt-5 h-full w-full">
