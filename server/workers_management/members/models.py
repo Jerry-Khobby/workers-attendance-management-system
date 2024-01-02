@@ -9,7 +9,7 @@ def generate_random_id():
 class User(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True,null=False)
     telephone = models.CharField(max_length=10)
     password = models.CharField(max_length=128)
     image = models.ImageField(upload_to='images/',blank=True)
