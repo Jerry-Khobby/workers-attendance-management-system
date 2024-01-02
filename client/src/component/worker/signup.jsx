@@ -22,19 +22,7 @@ const SignUpForm = () => {
   const [passwordMismatchError, setPasswordMismatchError] = useState("");
   const [telephoneLengthError, setTelephoneLengthError] = useState("");
   const [backendError, setBackendError] = useState("");
-    // Function to calculate age based on date of birth
-    const calculateAge = (birthdate) => {
-      const today = new Date();
-      const birthDate = new Date(birthdate);
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const monthDiff = today.getMonth() - birthDate.getMonth();
-  
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-      }
-  
-      return age.toString();
-    };
+  // Function to calculate age based on date of birth
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -58,61 +46,73 @@ const SignUpForm = () => {
     } else {
       setFormData((prevData) => ({
         ...prevData,
-        [name]: type === "file" ? files[0] : type === "checkbox" ? checked : value,
+        [name]:
+          type === "file" ? files[0] : type === "checkbox" ? checked : value,
       }));
     }
   };
+  const calculateAge = (birthdate) => {
+    const today = new Date();
+    const birthDate = new Date(birthdate);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
 
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+    return age.toString();
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const formDataForSubmission = new FormData();
-    // Reset error messages
-    setPasswordMismatchError("");
-    setTelephoneLengthError("");
-    setBackendError("");
-  
-    // Check if passwords match
-    if (formData.password !== formData.confirmPassword) {
-      setPasswordMismatchError("Passwords do not match");
-      return;
-    }
-  
-    if (formData.telePhone && formData.telePhone.length > 10) {
-      setTelephoneLengthError("Telephone number should not exceed 10 digits");
-      return;
-    }
-    // Append all form fields except image
-    formDataForSubmission.append("first_name", formData.firstName);
-    formDataForSubmission.append("last_name", formData.lastName);
-    formDataForSubmission.append("email", formData.email);
-    formDataForSubmission.append("telephone", formData.telePhone);
-    formDataForSubmission.append("password", formData.password);
-    formDataForSubmission.append("date_of_birth", formData.dateOfBirth);
-    formDataForSubmission.append("age", formData.age);
-    formDataForSubmission.append(
-      "previous_experience",
-      formData.previousExperience
-    );
-    formDataForSubmission.append("place_of_stay", formData.placeOfStay);
-    // Append the image separately
-    if (formData.image) {
-      formDataForSubmission.append("image", formData.image);
-    }
-  
     try {
+      const formDataForSubmission = new FormData();
+      // Reset error messages
+      setPasswordMismatchError("");
+      setTelephoneLengthError("");
+      setBackendError("");
+  
+      // Check if passwords match
+      if (formData.password !== formData.confirmPassword) {
+        setPasswordMismatchError("Passwords do not match");
+        return;
+      }
+  
+      if (formData.telePhone && formData.telePhone.length > 10) {
+        setTelephoneLengthError("Telephone number should not exceed 10 digits");
+        return;
+      }
+      // Append all form fields except image
+      formDataForSubmission.append("first_name", formData.firstName);
+      formDataForSubmission.append("last_name", formData.lastName);
+      formDataForSubmission.append("email", formData.email);
+      formDataForSubmission.append("telephone", formData.telePhone);
+      formDataForSubmission.append("password", formData.password);
+      formDataForSubmission.append("date_of_birth", formData.dateOfBirth);
+      formDataForSubmission.append("age", formData.age);
+      formDataForSubmission.append(
+        "previous_experience",
+        formData.previousExperience
+      );
+      formDataForSubmission.append("place_of_stay", formData.placeOfStay);
+      // Append the image separately
+      if (formData.image) {
+        formDataForSubmission.append("image", formData.image);
+      }
       const response = await fetch(
         "http://127.0.0.1:8000/api/users/action_post/",
         {
           method: "POST",
           headers: {
             Authorization: `Token ffaf53452dda08c2013dc5a89601dabffe05c185`,
-            'Content-Type': 'multipart/form-data',
           },
           body: formDataForSubmission,
         }
       );
-  
+
       if (response.status === 201) {
         console.log("User created successfully");
         // Reset the form after successful submission
@@ -131,24 +131,17 @@ const SignUpForm = () => {
           acceptTerms: false,
         });
       } else {
-        console.error("Error creating user:", response.statusText);
-        if (response.status === 401) {
+        if (response.status === 400) {
           setBackendError(
             "An account with this email already exists. Please login."
           );
-          console.log("Email is already in use");
-        } else if (response.status===400){
-          setBackendError("An account with this email already exists. Please login.");
-        }else{
-        setBackendError("Error creating user. Please try again.");
-        } 
         }
+      }
     } catch (error) {
       console.error("Error creating user:", error.message);
       setBackendError("Error creating user. Please try again.");
     }
   };
-  
 
   return (
     <div className="flex flex-col items-center justify-center mt-5 h-full w-full">
@@ -238,7 +231,6 @@ const SignUpForm = () => {
               value={formData.confirmPassword}
               onChange={handleChange}
             />
-            {/* Image input field */}
             <TextField
               label="Profile Picture"
               type="file"
@@ -249,10 +241,10 @@ const SignUpForm = () => {
                 shrink: true,
               }}
               id="image"
-              /* value={formData.image} */
               onChange={handleImageChange}
               accept="image/*"
             />
+
             <TextField
               label="Date of Birth"
               variant="outlined"
