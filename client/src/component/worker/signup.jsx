@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
-//import axios from "axios";
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
@@ -23,6 +22,19 @@ const SignUpForm = () => {
   const [passwordMismatchError, setPasswordMismatchError] = useState("");
   const [telephoneLengthError, setTelephoneLengthError] = useState("");
   const [backendError, setBackendError] = useState("");
+    // Function to calculate age based on date of birth
+    const calculateAge = (birthdate) => {
+      const today = new Date();
+      const birthDate = new Date(birthdate);
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+  
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+  
+      return age.toString();
+    };
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -35,11 +47,20 @@ const SignUpForm = () => {
   const handleChange = (event) => {
     const { name, value, type, checked, files } = event.target;
 
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]:
-        type === "file" ? files[0] : type === "checkbox" ? checked : value,
-    }));
+    // Update age when date of birth changes
+    if (name === "dateOfBirth") {
+      const age = calculateAge(value);
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+        age: age,
+      }));
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: type === "file" ? files[0] : type === "checkbox" ? checked : value,
+      }));
+    }
   };
 
 
@@ -250,8 +271,8 @@ const SignUpForm = () => {
               fullWidth
               rows={3}
               name="age"
+              readOnly
               value={formData.age}
-              onChange={handleChange}
             />
             <TextField
               label="Place of Stay"
