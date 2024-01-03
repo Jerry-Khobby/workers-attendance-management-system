@@ -9,6 +9,7 @@ from django.contrib.auth.hashers import make_password
 import base64
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import permissions
+from django.shortcuts import get_object_or_404
 
 
 class UserListCreateView(viewsets.ModelViewSet):
@@ -58,3 +59,44 @@ class UserListCreateView(viewsets.ModelViewSet):
                 return Response({'error': 'User with the same email already exists.'}, status=status.HTTP_400_BAD_REQUEST)
             else:
                 return Response({'error': 'An error occurred while processing your request.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+
+
+class UserRetrieveCardView(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    @action(detail=False, methods=['get'])
+    def retrieve_card_info(self, request):
+        email = request.query_params.get('email')
+        print(email)
+
+        if not email:
+            return Response({'error': 'Email parameter is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = get_object_or_404(User, email__iexact=email)
+        print(user)
+
+        #decoded_image = None
+        #if user.image:
+             #image_binary_data = user.image.read()
+             #encoded_image = base64.b64encode(image_binary_data).decode('utf-8')
+             #decoded_image = base64.b64decode(encoded_image).decode('utf-8')
+
+
+
+        user_info = {
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'date_of_birth': user.date_of_birth,
+             #'decoded_image': decoded_image,
+        }
+
+        return Response(user_info, status=status.HTTP_200_OK)
+           
+
+
+
+
