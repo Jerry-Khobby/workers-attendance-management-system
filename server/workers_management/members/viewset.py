@@ -10,6 +10,7 @@ import base64
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import permissions
 from django.shortcuts import get_object_or_404
+from django.core.files.base import ContentFile
 
 
 class UserListCreateView(viewsets.ModelViewSet):
@@ -71,27 +72,27 @@ class UserRetrieveCardView(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def retrieve_card_info(self, request):
         email = request.query_params.get('email')
-        print(email)
 
         if not email:
             return Response({'error': 'Email parameter is required'}, status=status.HTTP_400_BAD_REQUEST)
 
         user = get_object_or_404(User, email__iexact=email)
-        print(user)
+                # Use the UserSerializer to serialize the user data
+        user_serializer = UserSerializer(user)
+        raw_image_form=user_serializer.data['image']
+        #from the user 
 
-        #decoded_image = None
-        #if user.image:
-             #image_binary_data = user.image.read()
-             #encoded_image = base64.b64encode(image_binary_data).decode('utf-8')
-             #decoded_image = base64.b64decode(encoded_image).decode('utf-8')
-
-
+        decoded_image = None
+        if raw_image_form:
+            decoded_image=raw_image_form
+            
 
         user_info = {
+            'Id_number': user.id,
             'first_name': user.first_name,
             'last_name': user.last_name,
             'date_of_birth': user.date_of_birth,
-             #'decoded_image': decoded_image,
+            'decoded_image': decoded_image,
         }
 
         return Response(user_info, status=status.HTTP_200_OK)
