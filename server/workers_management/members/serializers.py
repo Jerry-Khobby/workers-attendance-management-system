@@ -1,11 +1,9 @@
-import base64
 from rest_framework import serializers
 from .models import User
 from django.contrib.auth.hashers import make_password, check_password
-from drf_extra_fields.fields import Base64ImageField
 
 class UserSerializer(serializers.ModelSerializer):
-    image = Base64ImageField()
+    image = serializers.CharField(required=False, allow_null=True)
 
     class Meta:
         model = User
@@ -15,14 +13,14 @@ class UserSerializer(serializers.ModelSerializer):
         # Hash the password before storing it
         validated_data['password'] = make_password(validated_data['password'])
 
-        # Encode the image data in base64 before storing it
-        if 'image' in validated_data and validated_data['image']:
-            image_data = validated_data['image'].read()
-            encoded_image = base64.b64encode(image_data).decode('utf-8')
-            validated_data['image'] = encoded_image
+        # Check if 'image' key exists in validated_data and is not None
+        if 'image' in validated_data and validated_data['image'] is not None:
+            # Process the image data if provided
+            image_data = validated_data['image']
+            # You can perform additional processing here if needed
         else:
             # If image is not present or provided or empty 
-            validated_data['image'] = None
+            validated_data.pop('image', None)
 
         return super(UserSerializer, self).create(validated_data)
 

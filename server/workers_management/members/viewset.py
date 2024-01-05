@@ -36,8 +36,9 @@ class UserListCreateView(viewsets.ModelViewSet):
         # Optionally hash the image using base64 encoding
         encoded_image = None
         if 'image' in request.data and request.data['image']:
-            image_data = request.data['image'].read()
-            encoded_image = base64.b64encode(image_data).decode('utf-8')
+            encoded_image=request.data['image']
+        else:
+            encoded_image=None
         # Create a user instance with hashed password and image
         user = User.objects.create(
             first_name=request.data.get('first_name'),
@@ -79,32 +80,17 @@ class UserRetrieveCardView(viewsets.ModelViewSet):
             return Response({'error': 'Email parameter is required'}, status=status.HTTP_400_BAD_REQUEST)
 
         user = get_object_or_404(User, email__iexact=email)
-        user_serializer = UserSerializer(user)
-        raw_image_form = user_serializer.data['image'].replace("/media/", "")
-        decode_image_form = None
-
-        if raw_image_form:
-            try:
-                raw_image_form.replace("/n", "")
-                image_64_decode = base64.b64decode(raw_image_form).decode('utf-8')
-                decode_image_form = image_64_decode
-                print(decode_image_form)
-                
-            except binascii.Error as e:
-                return Response({'error': f'Error decoding base64: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
         user_info = {
             'Id_number': user.id,
             'first_name': user.first_name,
             'last_name': user.last_name,
             'date_of_birth': user.date_of_birth,
-            'decoded_image': decode_image_form,
+            'decoded_image': user.image,
         }
 
         return Response(user_info, status=status.HTTP_200_OK)
 
            
-
 
 
 
