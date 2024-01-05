@@ -11,6 +11,8 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework import permissions
 from django.shortcuts import get_object_or_404
 from django.core.files.base import ContentFile
+import binascii
+import imghdr  # Added for detecting image format
 
 
 class UserListCreateView(viewsets.ModelViewSet):
@@ -77,25 +79,30 @@ class UserRetrieveCardView(viewsets.ModelViewSet):
             return Response({'error': 'Email parameter is required'}, status=status.HTTP_400_BAD_REQUEST)
 
         user = get_object_or_404(User, email__iexact=email)
-                # Use the UserSerializer to serialize the user data
         user_serializer = UserSerializer(user)
-        raw_image_form=user_serializer.data['image']
-        #from the user 
+        raw_image_form = user_serializer.data['image'].replace("/media/", "")
+        decode_image_form = None
 
-        decoded_image = None
         if raw_image_form:
-            decoded_image=raw_image_form
-            
+            try:
+                raw_image_form.replace("/n", "")
+                image_64_decode = base64.b64decode(raw_image_form).decode('utf-8')
+                decode_image_form = image_64_decode
+                print(decode_image_form)
+                
+            except binascii.Error as e:
+                return Response({'error': f'Error decoding base64: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         user_info = {
             'Id_number': user.id,
             'first_name': user.first_name,
             'last_name': user.last_name,
             'date_of_birth': user.date_of_birth,
-            'decoded_image': decoded_image,
+            'decoded_image': decode_image_form,
         }
 
         return Response(user_info, status=status.HTTP_200_OK)
+
            
 
 
