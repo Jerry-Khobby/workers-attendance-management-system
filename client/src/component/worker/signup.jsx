@@ -23,12 +23,27 @@ const SignUpForm = () => {
   const [telephoneLengthError, setTelephoneLengthError] = useState("");
   const [backendError, setBackendError] = useState("");
   // Function to calculate age based on date of birth
+  // I want to write a function that convert the image file gotten into base64 
+    const convertToBase64=(file)=>{
+      return new Promise((resolve,reject)=>{
+        const fileReader=new FileReader();
+        fileReader.readAsDataURL(file);
+        fileReader.onload=()=>{
+          resolve(fileReader.result);
+        };
+        fileReader.onerror=(error)=>{
+          reject(error);
+        };
+      })
+    }
 
-  const handleImageChange = (event) => {
+  const handleImageChange = async(event) => {
     const file = event.target.files[0];
+    const base64=await convertToBase64(file);
+    console.log(base64)
     setFormData((prevData) => ({
       ...prevData,
-      image: file,
+      image: base64,
     }));
   };
 
@@ -142,6 +157,8 @@ const SignUpForm = () => {
       setBackendError("Error creating user. Please try again.");
     }
   };
+
+
 
   return (
     <div className="flex flex-col items-center justify-center mt-5 h-full w-full">
