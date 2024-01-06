@@ -122,7 +122,7 @@ const SignUpForm = () => {
         {
           method: "POST",
           headers: {
-            Authorization: `Token ffaf53452dda08c2013dc5a89601dabffe05c185`,
+            Authorization: `Token a23653c2965c43077a41c74aaade3e236c45fbfc`,
           },
           body: formDataForSubmission,
         }
