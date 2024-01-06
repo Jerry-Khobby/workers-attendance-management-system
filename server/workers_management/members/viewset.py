@@ -98,6 +98,7 @@ class UserLoginDetail(viewsets.ModelViewSet):
         email = request.data.get('email', None)
         password = request.data.get('password', None)
         user_id = request.data.get('user_id', None)
+        print(f"User gotten:{email,password,user_id}")
 
         # Check if email, password, and user_id are provided
         if not email or not password or not user_id:
@@ -105,10 +106,13 @@ class UserLoginDetail(viewsets.ModelViewSet):
 
         # Authenticate user using both email and ID
         user = authenticate(request, email=email, password=password)
+        print(f"Authenticated User: {user}")
 
         if user is not None and str(user.id) == user_id:
             # Generate or retrieve a token for the authenticated user
-            token, _created = Token.objects.get_or_create(user=user)
+            token,created = Token.objects.get_or_create(user=user)
+            print(f"Token: {token.key}")
+
 
             # You can include additional user information in the response if needed
             user_info = {
