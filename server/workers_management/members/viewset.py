@@ -9,6 +9,8 @@ from django.contrib.auth.hashers import make_password
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import permissions
 from django.shortcuts import get_object_or_404
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import authenticate
 
 
 class UserListCreateView(viewsets.ModelViewSet):
@@ -85,6 +87,40 @@ class UserRetrieveCardView(viewsets.ModelViewSet):
 
         return Response(user_info, status=status.HTTP_200_OK)
 
+class UserLoginDetail(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    @action(detail=False, methods=['post'])
+    def login_user(self, request):
+        email = request.data.get('email', None)
+        password = request.data.get('password', None)
+        user_id = request.data.get('user_id', None)
+
+        # Check if email, password, and user_id are provided
+        if not email or not password or not user_id:
+            return Response({'error': 'Email, password, and user ID are required for login.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Authenticate user using both email and ID
+        user = authenticate(request, email=email, password=password)
+
+        if user is not None and str(user.id) == user_id:
+            # Generate or retrieve a token for the authenticated user
+            token, _created = Token.objects.get_or_create(user=user)
+
+            # You can include additional user information in the response if needed
+            user_info = {
+                'Id_number': user.id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'date_of_birth': user.date_of_birth,
+            }
+
+            return Response({'token': token.key, 'user_info': user_info}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Invalid credentials or user ID. Please check your email, password, and user ID.'}, status=status.HTTP_401_UNAUTHORIZED)
            
 
 
