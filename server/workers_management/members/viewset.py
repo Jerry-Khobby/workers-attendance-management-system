@@ -6,13 +6,9 @@ from rest_framework import status
 from rest_framework.decorators import action
 from django.db.utils import IntegrityError
 from django.contrib.auth.hashers import make_password
-import base64
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import permissions
 from django.shortcuts import get_object_or_404
-from django.core.files.base import ContentFile
-import binascii
-import imghdr  # Added for detecting image format
 
 
 class UserListCreateView(viewsets.ModelViewSet):
@@ -34,11 +30,7 @@ class UserListCreateView(viewsets.ModelViewSet):
         hashed_password = make_password(password)
 
         # Optionally hash the image using base64 encoding
-        encoded_image = None
-        if 'image' in request.data and request.data['image']:
-            encoded_image=request.data['image']
-        else:
-            encoded_image=None
+        encoded_image = request.data.get('image',None)
         # Create a user instance with hashed password and image
         user = User.objects.create(
             first_name=request.data.get('first_name'),
@@ -80,12 +72,15 @@ class UserRetrieveCardView(viewsets.ModelViewSet):
             return Response({'error': 'Email parameter is required'}, status=status.HTTP_400_BAD_REQUEST)
 
         user = get_object_or_404(User, email__iexact=email)
+        encoded_image=None
+        if user.image:
+            encoded_image=user.image
         user_info = {
             'Id_number': user.id,
             'first_name': user.first_name,
             'last_name': user.last_name,
             'date_of_birth': user.date_of_birth,
-            'decoded_image': user.image,
+            'decoded_image': encoded_image,
         }
 
         return Response(user_info, status=status.HTTP_200_OK)

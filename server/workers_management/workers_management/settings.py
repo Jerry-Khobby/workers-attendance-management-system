@@ -63,9 +63,6 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 
-""" MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/' """
-
 
 
 ROOT_URLCONF = 'workers_management.urls'
