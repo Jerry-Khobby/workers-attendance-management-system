@@ -130,7 +130,7 @@ const SignUpForm = () => {
 
       if (response.status === 201) {
         console.log("User created successfully");
-        // Reset the form after successful submission
+        window.location.href = `/card_info/${formData.email}`;
         setFormData({
           firstName: "",
           lastName: "",
@@ -345,10 +345,10 @@ const SignUpForm = () => {
                 Login
               </p>
             </div>
-
-            <Button type="submit" variant="contained" color="primary" fullWidth>
+<Button type="submit" variant="contained" color="primary" fullWidth>
               Confirm
-            </Button>
+</Button>
+
           </form>
         </Box>
       </div>
