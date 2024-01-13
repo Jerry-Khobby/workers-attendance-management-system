@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
+import {Link} from "react-router-dom"
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
@@ -341,9 +342,12 @@ const SignUpForm = () => {
               }}
             >
               <p>Already have an account? </p>
-              <p to="/login" className="text-blue-500">
+              <Link to="/login">
+              <p  className="text-blue-500">
                 Login
               </p>
+              </Link>
+
             </div>
 <Button type="submit" variant="contained" color="primary" fullWidth>
               Confirm

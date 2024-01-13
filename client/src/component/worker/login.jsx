@@ -41,6 +41,12 @@ const LoginPage = () => {
         case 200:
           setErrorMessage('Successfully logged in');
           // Add any additional logic for a successful login here
+          setEmailAndPassword({
+            email: '',
+            password: '',
+            user_id:'',
+          })
+
           break;
         case 401:
           setErrorMessage('Incorrect password');
@@ -60,8 +66,10 @@ const LoginPage = () => {
 
   return (
     <div className='flex flex-col items-center justify-center mt-20 h-full w-full'>
-            {errorMessage && (
-        <p className="text-red-500 font-medium mb-4">{errorMessage}</p>
+      {errorMessage && (
+        <p className={`font-medium mb-4 ${errorMessage.includes('Successfully') ? 'text-green-500' : 'text-red-500'}`}>
+          {errorMessage}
+        </p>
       )}
     <div>
     <h2 className='font-bold text-2xl font-serif'>Login Page </h2>
