@@ -7,22 +7,62 @@ const LoginPage = () => {
   const [emailAndPassword, setEmailAndPassword] = useState({
     email: '',
     password: '',
-    staffnumber:'',
+    user_id:'',
   });
+
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleEmailAndPasswordChange = (event) => {
     const { name, value } = event.target;
     setEmailAndPassword((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async(event) => {
     event.preventDefault();
     // Add your form submission logic here
     console.log('Form submitted:', emailAndPassword);
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/userlogin/login_user/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Token a23653c2965c43077a41c74aaade3e236c45fbfc',
+        },
+        body: JSON.stringify(emailAndPassword),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setErrorMessage(errorData.error || 'Something went wrong');
+        return;
+      }
+      const status = response.status;
+      switch (status) {
+        case 200:
+          setErrorMessage('Successfully logged in');
+          // Add any additional logic for a successful login here
+          break;
+        case 401:
+          setErrorMessage('Incorrect password');
+          break;
+        case 404:
+          setErrorMessage('User does not exist');
+          break;
+        // Add more cases for other status codes as needed
+        default:
+          setErrorMessage('Something went wrong');
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      setErrorMessage('Something went wrong');
+    }
   };
 
   return (
     <div className='flex flex-col items-center justify-center mt-20 h-full w-full'>
+            {errorMessage && (
+        <p className="text-red-500 font-medium mb-4">{errorMessage}</p>
+      )}
     <div>
     <h2 className='font-bold text-2xl font-serif'>Login Page </h2>
   </div>
@@ -61,9 +101,9 @@ const LoginPage = () => {
           fullWidth
           type="password"
           required
-          name="staffnumber"
+          name="user_id"
           maxLength="10"
-          value={emailAndPassword.staffnumber}
+          value={emailAndPassword.user_id}
           onChange={handleEmailAndPasswordChange}
         />
 
