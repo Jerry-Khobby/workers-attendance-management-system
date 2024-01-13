@@ -100,15 +100,13 @@ class UserLoginDetail(viewsets.ModelViewSet):
             return Response({'error': 'Email and password are required'}, status=status.HTTP_400_BAD_REQUEST)
     #check if the a user with the the provided email,password and user ID exists 
         try:
+            #I have to get the user by grabbing his email and Id at once and check if it is available 
             user=User.objects.get(id=user_id,email=email)
-            if user:
-                user_new_password = check_password(password,user.password)
-                if user_new_password:
-                #User exists and password is correct 
-                    return Response({'status': 'Successfully logged in'}, status=status.HTTP_200_OK)
-                else:
-                    # User exists but password is incorrect
-                    return Response({'error': 'Incorrect password'}, status=status.HTTP_401_UNAUTHORIZED)
+            # I will have to check the password, since I initially hashed pr make hash it , I will have to dehash it using the check method 
+            if check_password(password,user.password):
+                return Response({'status': 'Successfully logged in'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'error':'Incorrect password'},status=status.HTTP_401_UNAUTHORIZED)
         except User.DoesNotExist:
             # User with the provided email and ID does not exist
             return Response({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
