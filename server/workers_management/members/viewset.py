@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
 from django.db.utils import IntegrityError
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password,check_password
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import permissions
 from django.shortcuts import get_object_or_404
@@ -93,7 +93,28 @@ class UserLoginDetail(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def login_user(self, request):
-        pass 
+        email=request.data.get('email')
+        password=request.data.get('password')
+        user_id=request.data.get('user_id')
+        if not email or not password or not user_id:
+            return Response({'error': 'Email and password are required'}, status=status.HTTP_400_BAD_REQUEST)
+    #check if the a user with the the provided email,password and user ID exists 
+        try:
+            user=User.objects.get(id=user_id,email=email)
+            if user:
+                user_new_password = check_password(password,user.password)
+                if user_new_password:
+                #User exists and password is correct 
+                    return Response({'status': 'Successfully logged in'}, status=status.HTTP_200_OK)
+                else:
+                    # User exists but password is incorrect
+                    return Response({'error': 'Incorrect password'}, status=status.HTTP_401_UNAUTHORIZED)
+        except User.DoesNotExist:
+            # User with the provided email and ID does not exist
+            return Response({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+        
+
            
 
 
