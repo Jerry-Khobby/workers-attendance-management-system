@@ -31,26 +31,27 @@ const Navbar = () => {
         <FontAwesomeIcon icon={faUser} size="x" className="text-gray-500 rounded-full border border-gray-500 p-1" />
       </div>
       {showMenu && (
-        <div className="fixed top-0 left-0 h-full w-64 bg-gray-50 p-4 sm:h-full">
-          <ul className='flex flex-col items-center sm:items-start justify-around  sm:justify-center  h-full'>
-            <li>
-            <button className='text-black p-2 w-56 sm:w-56 text-center hover:bg-white hover:border hover:border-gray-300 rounded-md'>
-              Check In - Today
-              </button>
-              </li>
-            <li>
-            <button className='text-black p-2 w-56 text-center hover:bg-white hover:border hover:border-gray-300 rounded-md'>
-              Check-out
-                </button>
-                </li>
-            <li>
-            <button className='text-black p-2 w-56 text-center hover:bg-white hover:border hover:border-gray-300 rounded-md'>
-                Attendance record
-              </button>
-            </li>
-          </ul>
-        </div>
-      )}
+  <div className="fixed top-0 left-0 h-full w-64 bg-gray-50 p-4 sm:h-full">
+    <ul className='flex flex-col items-center justify-center h-full gap-24  overflow-y-scroll overflow-x-hidden md:items-start md:justify-center md:pb-60 lg:pb-96 '>
+      <li>
+        <button className='text-black p-2 w-56 sm:w-56 text-center hover:bg-white hover:border hover:border-gray-300 rounded-md'>
+          Check In - Today
+        </button>
+      </li>
+      <li>
+        <button className='text-black p-2 w-56 text-center hover:bg-white hover:border hover:border-gray-300 rounded-md'>
+          Check-out
+        </button>
+      </li>
+      <li>
+        <button className='text-black p-2 w-56 text-center hover:bg-white hover:border hover:border-gray-300 rounded-md'>
+          Attendance record
+        </button>
+      </li>
+    </ul>
+  </div>
+)}
+
     </div>
   );
 };
