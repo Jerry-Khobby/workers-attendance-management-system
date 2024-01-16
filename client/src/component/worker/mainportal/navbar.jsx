@@ -23,7 +23,7 @@ const Navbar = () => {
         />
       </button>
       <div>
-        <h2 className='font-mono'>
+        <h2 className='font-mono md:text-base text-sm'>
           JERRY COMPANY LIMITED
         </h2>
       </div>
@@ -32,7 +32,7 @@ const Navbar = () => {
       </div>
       {showMenu && (
   <div className="fixed top-0 left-0 h-full w-64 bg-gray-50 p-4 sm:h-full">
-    <ul className='flex flex-col items-center justify-center h-full gap-24  overflow-y-scroll overflow-x-hidden md:items-start md:justify-center md:pb-60 lg:pb-96 '>
+    <ul className='flex flex-col items-center justify-center h-full gap-24  overflow-y-scroll overflow-x-hidden md:items-start md:justify-center md:pb-80 lg:pb-96 '>
       <li>
         <button className='text-black p-2 w-56 sm:w-56 text-center hover:bg-white hover:border hover:border-gray-300 rounded-md'>
           Check In - Today
