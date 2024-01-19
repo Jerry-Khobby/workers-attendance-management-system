@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from .models import User
-from .serializers import UserSerializer
+from .models import User,Attendance
+from .serializers import UserSerializer,AttendanceSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
@@ -9,6 +9,7 @@ from django.contrib.auth.hashers import make_password,check_password
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import permissions
 from django.shortcuts import get_object_or_404
+from datetime import datetime,time
 
 
 class UserListCreateView(viewsets.ModelViewSet):
@@ -111,9 +112,30 @@ class UserLoginDetail(viewsets.ModelViewSet):
             # User with the provided email and ID does not exist
             return Response({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
-        
 
-           
+
+class CheckInViewSet(viewsets.ModelViewSet):
+    queryset = Attendance.objects.all()
+    serializer_class = AttendanceSerializer
+
+    @action(detail=False, methods=['post'])
+    def check_in(self, request):
+        # Extract user_id from request data
+        user_id = request.data.get('user_id')
+        print(user_id)
+
+        # Check if user
+        if not user_id:
+            return Response({'error': 'User ID is required for check-in'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Get the user using the user_id
+        user = get_object_or_404(User, id=user_id)
+        #If the user is present then I will have to check , if the user has already signed in 
+        #If the user has not signed in, then , I will save the time 
+        #Else if the user has already signed in then , I will throw the error that , you have already check in today 
+
+        return Response({'status': 'Check-in successful'}, status=status.HTTP_200_OK)
+        
 
 
 

@@ -33,7 +33,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 #creating the seralization for the attendance 
-class Attendance(serializers.ModelSerializer):
+class AttendanceSerializer(serializers.ModelSerializer):
     class Meta :
         model=Attendance
         fields='__all__'

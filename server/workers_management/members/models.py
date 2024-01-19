@@ -38,8 +38,8 @@ class User(models.Model):
 
 class Attendance(models.Model):
     user=models.ForeignKey(User, on_delete=models.CASCADE)
-    check_in=models.TimeField()
-    check_out=models.TimeField()
+    check_in=models.DateTimeField(null=True,blank=True)
+    check_out=models.DateTimeField(null=True, blank=True)
     
     
     def __str__(self):
