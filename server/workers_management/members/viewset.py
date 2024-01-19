@@ -122,19 +122,31 @@ class CheckInViewSet(viewsets.ModelViewSet):
     def check_in(self, request):
         # Extract user_id from request data
         user_id = request.data.get('user_id')
-        print(user_id)
 
-        # Check if user
+        # Check if user_id is provided
         if not user_id:
             return Response({'error': 'User ID is required for check-in'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Get the user using the user_id
         user = get_object_or_404(User, id=user_id)
-        #If the user is present then I will have to check , if the user has already signed in 
-        #If the user has not signed in, then , I will save the time 
-        #Else if the user has already signed in then , I will throw the error that , you have already check in today 
 
-        return Response({'status': 'Check-in successful'}, status=status.HTTP_200_OK)
+        # Check if the user has already checked in today
+        today = datetime.now().date()
+        existing_attendance = Attendance.objects.filter(
+            user=user,
+            check_in__date=today
+        ).first()
+
+        if existing_attendance:
+            return Response({'message': 'User already checked in'}, status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            # Save the check-in time with date
+            check_in_datetime = datetime.now()
+            Attendance.objects.create(user=user, check_in=check_in_datetime)
+
+            return Response({'status': 'Check-in successful'}, status=status.HTTP_200_OK)
+
+
         
 
 
