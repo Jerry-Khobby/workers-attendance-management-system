@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User,Attendance
 from django.contrib.auth.hashers import make_password, check_password
 
 class UserSerializer(serializers.ModelSerializer):
@@ -29,3 +29,11 @@ class UserSerializer(serializers.ModelSerializer):
         if user and not check_password(value, user.password):
             raise serializers.ValidationError("Incorrect password")
         return value
+
+
+
+#creating the seralization for the attendance 
+class Attendance(serializers.ModelSerializer):
+    class Meta :
+        model=Attendance
+        fields='__all__'
