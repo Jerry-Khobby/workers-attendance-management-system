@@ -148,44 +148,56 @@ class CheckInViewSet(viewsets.ModelViewSet):
 
 
 #Writing the logic for the checkout
-class CheckOutViewSet:
-    queryset=Attendance.objects.all()
-    serializer_class=AttendanceSerializer
-    @action(detail=False,methods=['post'])
-    def check_out(self,request):
-        #First grab the user_id from the form filled 
-        user_id =request.data.get('user_id')
-        #check if the user id is provided
+class CheckOutViewSet(viewsets.ModelViewSet):
+    queryset = Attendance.objects.all()
+    serializer_class = AttendanceSerializer
+
+    @action(detail=False, methods=['post'])
+    def check_out(self, request):
+        # First, grab the user_id from the form filled
+        user_id = request.data.get('user_id')
+        # Check if the user id is provided
         if not user_id:
-            return Response({'error':'User ID  required for check-out'},status=status.HTTP_400_BAD_REQUEST)
-        
-        #search through the database to find the user 
-        user=get_object_or_404(User,id=user_id)
+            return Response({'error': 'User ID is required for check-out'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Search through the database to find the user
+        user = get_object_or_404(User, id=user_id)
         # Check if the user has already checked in today
         today = datetime.now().date()
-        existing_attendance=Attendance.objects.filter(
+        existing_attendance = Attendance.objects.filter(
             user=user,
             check_in__date=today
         ).first()
-        
-        #If user has not yet checked in 
+
+        # If the user has not yet checked in
         if not existing_attendance:
-            return Response({'message':'User has not check-in today and cannot check-out unless checked in'},status=status.HTTP_401_UNAUTHORIZED)
-        
-        #check if the user has already checked out 
-        checked_out_already=Attendance.objects.filter(
+            return Response({'message': 'User has not checked in today and cannot check-out unless checked in'},
+                            status=status.HTTP_401_UNAUTHORIZED)
+
+        # Check if the user has already checked out
+        checked_out_already = Attendance.objects.filter(
             user=user,
             check_out__date=today
         )
         if checked_out_already:
-            return Response({'message':'User has already check out today'},status=status.HTTP_402_PAYMENT_REQUIRED)
-        #I want to grab the time
-        check_in_datetime = datetime.now()
-        
-        #if the time is not greater or equal to 4:00pm then I dont want to checkout the worker 
-        
-        
-        pass 
+            return Response({'message': 'User has already checked out today'}, status=status.HTTP_402_PAYMENT_REQUIRED)
+
+        # Grab the time
+        current_time = datetime.now().time()
+        checkout_time_limit = time(4, 0)  # 4:00 PM
+
+        # If the current time is before 4:00 PM, do not allow checkout
+        print(current_time)
+        print(checkout_time_limit)
+        if current_time < checkout_time_limit:
+            return Response({'message': 'Checkout is only allowed after 4:00 PM'}, status=status.HTTP_403_FORBIDDEN)
+
+        # If the current time is 4:00 PM or later, proceed with checkout logic
+        check_out_datetime = datetime.now()
+        existing_attendance.check_out = check_out_datetime
+        existing_attendance.save()
+
+        return Response({'status': 'Check-out successful'}, status=status.HTTP_200_OK) 
         
         
 
