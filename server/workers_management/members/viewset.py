@@ -147,6 +147,21 @@ class CheckInViewSet(viewsets.ModelViewSet):
             return Response({'status': 'Check-in successful'}, status=status.HTTP_200_OK)
 
 
+#Writing the logic for the checkout
+class CheckOutViewSet:
+    queryset=Attendance.objects.all()
+    serializer_class=AttendanceSerializer
+    @action(detail=False,methods=['post'])
+    def check_out(self,request):
+        #First grab the user_id from the form filled 
+        user_id =request.data.get('user_id')
+        #check if the user id is provided
+        if not user_id:
+            return Response({'error':'User ID  required for check-out'},status=status.HTTP_400_BAD_REQUEST)
+        
+        #search through the database to find the user 
+        user=get_object_or_404(User,id=user_id)
+        
         
 
 
