@@ -161,6 +161,31 @@ class CheckOutViewSet:
         
         #search through the database to find the user 
         user=get_object_or_404(User,id=user_id)
+        # Check if the user has already checked in today
+        today = datetime.now().date()
+        existing_attendance=Attendance.objects.filter(
+            user=user,
+            check_in__date=today
+        ).first()
+        
+        #If user has not yet checked in 
+        if not existing_attendance:
+            return Response({'message':'User has not check-in today and cannot check-out unless checked in'},status=status.HTTP_401_UNAUTHORIZED)
+        
+        #check if the user has already checked out 
+        checked_out_already=Attendance.objects.filter(
+            user=user,
+            check_out__date=today
+        )
+        if checked_out_already:
+            return Response({'message':'User has already check out today'},status=status.HTTP_402_PAYMENT_REQUIRED)
+        #I want to grab the time
+        check_in_datetime = datetime.now()
+        
+        #if the time is not greater or equal to 4:00pm then I dont want to checkout the worker 
+        
+        
+        pass 
         
         
 
