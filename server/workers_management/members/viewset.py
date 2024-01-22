@@ -197,7 +197,15 @@ class CheckOutViewSet(viewsets.ModelViewSet):
         existing_attendance.check_out = check_out_datetime
         existing_attendance.save()
 
-        return Response({'status': 'Check-out successful'}, status=status.HTTP_200_OK) 
+        return Response({'status': 'Check-out successful'}, status=status.HTTP_200_OK)
+    
+# the next viewset is the one that will produce the workers attendance record 
+
+class WorkersAttendanceSheet(viewsets.ModelViewSet):
+    queryset = Attendance.objects.all()
+    serializer_class = AttendanceSerializer
+    pass 
+     
         
         
 
