@@ -204,7 +204,24 @@ class CheckOutViewSet(viewsets.ModelViewSet):
 class WorkersAttendanceSheet(viewsets.ModelViewSet):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
-    pass 
+    @action(detail=False,methods=['post'])
+    def attendance_sheet(self,request):
+        #first grab the user's id from the form 
+        user_id=request.data.get('user_id')
+        # Check if the user id is provided
+        if not user_id:
+            return Response({'error': 'User ID is required for check-out'}, status=status.HTTP_400_BAD_REQUEST)
+        # Search through the database to find the user
+        user = get_object_or_404(User, id=user_id)
+        # Check if the user has already checked in today
+        # the attendance must be classified based on days 
+        user_info={
+            
+        }
+        pass
+        
+        
+    
      
         
         
