@@ -222,6 +222,10 @@ class WorkersAttendanceSheet(viewsets.ModelViewSet):
             'user_name': f'{user.first_name} {user.last_name}',
             'attendance_records': serializer.data,
         }
+        #the way to get the value of the of the response_data is to use the attendance record in the square bracket 
+        #the way to loop through this attendance record on a react frontend is to catch the data on the frontend using your fetch and then 
+        #using the data.attendance_record to get the data and using the map function to map through 
+        
         return Response(response_data, status=status.HTTP_200_OK)
          
                
