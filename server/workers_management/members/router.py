@@ -2,7 +2,7 @@ from rest_framework import routers
 from django.urls import path, include
 
 
-from .viewset import UserListCreateView,UserRetrieveCardView,UserLoginDetail,CheckInViewSet,CheckOutViewSet
+from .viewset import UserListCreateView,UserRetrieveCardView,UserLoginDetail,CheckInViewSet,CheckOutViewSet,WorkersAttendanceSheet
 
 app_name='members'
 
@@ -13,6 +13,7 @@ router.register(r'usercard', UserRetrieveCardView, basename='user-retrieve-card'
 router.register(r'userlogin',UserLoginDetail,basename='user-login')
 router.register(r'checkin',CheckInViewSet, basename='user-checkin')
 router.register(r'checkout',CheckOutViewSet,basename='user-checkout')
+router.register(r'attendancesheet',WorkersAttendanceSheet,basename='user-attend')
 
 
 

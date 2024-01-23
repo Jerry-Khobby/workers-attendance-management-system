@@ -213,12 +213,18 @@ class WorkersAttendanceSheet(viewsets.ModelViewSet):
             return Response({'error': 'User ID is required for check-out'}, status=status.HTTP_400_BAD_REQUEST)
         # Search through the database to find the user
         user = get_object_or_404(User, id=user_id)
-        # Check if the user has already checked in today
-        # the attendance must be classified based on days 
-        user_info={
-            
+        #once the user enters his ID I want to present the user with his attendance sheet 
+        attendance_sheet=Attendance.objects.filter(user=user)
+        #serialize the attendance records 
+        serializer=AttendanceSerializer(attendance_sheet,many=True)
+        response_data = {
+            'user_id': user.id,
+            'user_name': f'{user.first_name} {user.last_name}',
+            'attendance_records': serializer.data,
         }
-        pass
+        return Response(response_data, status=status.HTTP_200_OK)
+         
+               
         
         
     
