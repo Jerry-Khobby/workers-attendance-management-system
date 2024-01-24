@@ -1,11 +1,9 @@
 import Navbar from "./navbar";
-import Login from "./idinput";
 
 const MainHomePortal = () => {
   return (
     <div>
-      <Navbar />
-      <Login heading="CHECKIN" />
+      <Navbar/>
     </div>
   );
 };
