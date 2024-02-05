@@ -34,6 +34,9 @@ const LoginPage = () => {
       if (!response.ok) {
         const errorData = await response.json();
         setErrorMessage(errorData.error || 'Something went wrong');
+        setTimeout(() => {
+          setErrorMessage('');
+        }, 2000);
         return;
       }
       const status = response.status;
@@ -45,8 +48,11 @@ const LoginPage = () => {
             email: '',
             password: '',
             user_id:'',
-          })
-
+          });
+          setTimeout(() => {
+            setErrorMessage('');
+          }, 2000);
+          window.location.href="/homepage"
           break;
         case 401:
           setErrorMessage('Incorrect password');
@@ -61,6 +67,10 @@ const LoginPage = () => {
     } catch (error) {
       console.error('Error during login:', error);
       setErrorMessage('Something went wrong');
+       // Clear the error message after 3 seconds
+    setTimeout(() => {
+      setErrorMessage('');
+    }, 2000);
     }
   };
 
