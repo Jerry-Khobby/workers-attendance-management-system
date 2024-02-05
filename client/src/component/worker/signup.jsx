@@ -332,8 +332,6 @@ const SignUpForm = () => {
                 </a>
               </label>
             </div>
-
-            {/* Link to login page on the same line */}
             <div
               style={{
                 display: "flex",

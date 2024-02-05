@@ -13,6 +13,12 @@ const StaticPage = () => {
         <Button variant="contained" color="inherit" style={{ width: '200px', marginBottom: '10px' }}>
           Attendance Sheet
         </Button>
+        <Button variant="contained" color="primary" style={{ width: '200px', marginBottom: '10px' }}>
+          My Worker Card
+        </Button>
+        <Button variant="contained" color="error" style={{ width: '200px', marginBottom: '10px' }}>
+          Delete Me
+        </Button>
     </div>
   );
 };

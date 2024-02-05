@@ -1,8 +1,9 @@
 import React,{useState,useEffect} from "react";
 import { Card, CardContent, Button } from "@mui/material";
 import "tailwindcss/tailwind.css"; // Import Tailwind CSS styles
-import { useParams } from "react-router-dom";
+import { useParams,Link } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
+
 
 
 const WorkersCard = () => {
@@ -12,6 +13,11 @@ const WorkersCard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        //attempt to get data from localstorage 
+        const storedUserData = localStorage.getItem("userData");
+        if (storedUserData) {
+          setUserData(JSON.parse(storedUserData));
+        }else{
         const response = await fetch(`http://127.0.0.1:8000/api/usercard/retrieve_card_info/?email=${email}`,{
           method:'GET',
           headers:{
@@ -21,9 +27,12 @@ const WorkersCard = () => {
         if (response.ok) {
           const data = await response.json();
           setUserData(data); // Assuming the response is a JSON object, adjust as needed
+           // Save data to localStorage
+           localStorage.setItem("userData", JSON.stringify(data));
         } else {
           console.error(`Failed to fetch data. Status: ${response.status}`);
         }
+      }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -79,7 +88,9 @@ const WorkersCard = () => {
         </CardContent>
       </Card>
       <Button variant="contained" color="primary">
-        HOME PAGE
+      <Link to="/homepage">
+      HOME PAGE
+      </Link>
       </Button>
     </div>
   );
