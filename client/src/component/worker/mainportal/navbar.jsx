@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faUser } from '@fortawesome/free-solid-svg-icons';
-import StaticPage from './frontpage';
 
 const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false);
@@ -87,7 +86,6 @@ const Navbar = () => {
           </div>
         )}
       </div>
-      <StaticPage />
     </div>
   );
 };
