@@ -1,17 +1,20 @@
-import React, { useState, useEffect, createContext,useContext } from 'react';
+import React, { useState, useEffect, createContext, useContext } from 'react';
 
 const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    () => localStorage.getItem('isLoggedIn') === 'true' || false
-  );
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    // Check if the stored timestamp exists and if it's less than 4 hours old
+    const storedTimestamp = localStorage.getItem('loginTimestamp');
+    return storedTimestamp && Date.now() - parseInt(storedTimestamp) < 4 * 60 * 60 * 1000;
+  });
 
   useEffect(() => {
-    localStorage.setItem('isLoggedIn', isLoggedIn);
+    // Update login timestamp in local storage whenever isLoggedIn changes
+    localStorage.setItem('loginTimestamp', Date.now());
   }, [isLoggedIn]);
 
-  const contextValue = React.useMemo(() => ({isLoggedIn, setIsLoggedIn }), [
+  const contextValue = React.useMemo(() => ({ isLoggedIn, setIsLoggedIn }), [
     isLoggedIn,
     setIsLoggedIn,
   ]);
@@ -23,8 +26,6 @@ export const AuthContextProvider = ({ children }) => {
   );
 };
 
-
-
-export const useAuthContext=()=>{
-  return useContext(AuthContext)
-}
+export const useAuthContext = () => {
+  return useContext(AuthContext);
+};
