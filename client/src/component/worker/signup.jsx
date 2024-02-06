@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState} from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import {Link} from "react-router-dom"
+import { useAuthContext } from "../../context/authContext";
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
@@ -19,7 +20,7 @@ const SignUpForm = () => {
     previousExperience: "",
     acceptTerms: false,
   });
-
+  const {setIsLoggedIn}=useAuthContext();
   const [passwordMismatchError, setPasswordMismatchError] = useState("");
   const [telephoneLengthError, setTelephoneLengthError] = useState("");
   const [backendError, setBackendError] = useState("");
@@ -131,6 +132,8 @@ const SignUpForm = () => {
 
       if (response.status === 201) {
         console.log("User created successfully");
+        //set isLoggedIn to true after successfully signup 
+        setIsLoggedIn(true);
         window.location.href = `/card_info/${formData.email}`;
         setFormData({
           firstName: "",

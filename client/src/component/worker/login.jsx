@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import { useAuthContext } from '../../context/authContext';
+import { Link } from 'react-router-dom';
 
 const LoginPage = () => {
   const [emailAndPassword, setEmailAndPassword] = useState({
@@ -9,7 +11,7 @@ const LoginPage = () => {
     password: '',
     user_id:'',
   });
-
+const {setIsLoggedIn}=useAuthContext();
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleEmailAndPasswordChange = (event) => {
@@ -52,6 +54,7 @@ const LoginPage = () => {
           setTimeout(() => {
             setErrorMessage('');
           }, 2000);
+          setIsLoggedIn(true);
           window.location.href="/homepage"
           break;
         case 401:
@@ -138,7 +141,12 @@ const LoginPage = () => {
           onChange={handleEmailAndPasswordChange}
         />
 
-        {/* Confirm button */}
+<p>Do not  have an account?Please  </p>
+              <Link to="/">
+              <p  className="text-blue-500">
+                Signup
+              </p>
+              </Link>
         <Button type="submit" variant="contained" color="primary" fullWidth>
           Confirm
         </Button>
