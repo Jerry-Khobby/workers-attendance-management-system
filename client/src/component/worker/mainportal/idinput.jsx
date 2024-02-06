@@ -1,13 +1,18 @@
 import React from "react";
 import { Button, TextField, Typography, Container, Paper, Box } from "@mui/material";
+import { useParams } from "react-router-dom";
+import Navbar from "./navbar";
 
-const Login = ({heading}) => {
+const IDInput = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Add your checkout logic here
   };
+  const{heading}=useParams();
 
   return (
+    <div>
+      <Navbar/>
     <Container component="main" maxWidth="xs">
       <Box
         sx={{
@@ -47,7 +52,10 @@ const Login = ({heading}) => {
         </Paper>
       </Box>
     </Container>
+
+    </div>
+
   );
 };
 
-export default Login;
+export default IDInput;

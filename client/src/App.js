@@ -5,6 +5,8 @@ import LoginPage from "./component/worker/login";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import MainHomePortal from "./component/worker/mainportal/main";
 import { AuthContextProvider } from "./context/authContext";
+import IDInput from "./component/worker/mainportal/idinput";
+
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
           <Route path="/card_info/:email" element={<WorkersCard />} />{" "}
           <Route path="/login" element={<LoginPage />} />{" "}
           <Route path="/homepage" element={<MainHomePortal/>} />{" "}
+          <Route path="/homepage/:heading" element={<IDInput />}/>{""}
+
         </Routes>{" "}
       </BrowserRouter>{" "}
       </AuthContextProvider>
