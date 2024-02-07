@@ -12,7 +12,7 @@ const StaticPage = () => {
          
         </Button>
         <Button variant="contained" color="secondary" style={{ width: '200px', marginBottom: '10px' }}>
-        <Link to="/homepage/CheckOut">
+        <Link to="/homepage/checkout">
           Check Out
           </Link>
         </Button>
