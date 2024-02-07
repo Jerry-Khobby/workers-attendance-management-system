@@ -210,7 +210,7 @@ class WorkersAttendanceSheet(viewsets.ModelViewSet):
         user_id=request.data.get('user_id')
         # Check if the user id is provided
         if not user_id:
-            return Response({'error': 'User ID is required for check-out'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'User ID is not found in the database'}, status=status.HTTP_400_BAD_REQUEST)
         # Search through the database to find the user
         user = get_object_or_404(User, id=user_id)
         #once the user enters his ID I want to present the user with his attendance sheet 

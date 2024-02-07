@@ -7,6 +7,7 @@ import MainHomePortal from "./component/worker/mainportal/main";
 import { AuthContextProvider } from "./context/authContext";
 import CheckIn from "./component/worker/mainportal/checkin";
 import CheckOut from "./component/worker/mainportal/checkout";
+import AttendanceID from "./component/worker/mainportal/attendance_id";
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route path="/homepage" element={<MainHomePortal/>} />{" "}
           <Route path="/homepage/checkin" element={<CheckIn />}/>{""}
           <Route path="/homepage/checkout" element={<CheckOut/>} />{""}
+          <Route path="/homepage/attendancesheet" element={<AttendanceID/>}/>{""}
         </Routes>{" "}
       </BrowserRouter>{" "}
       </AuthContextProvider>

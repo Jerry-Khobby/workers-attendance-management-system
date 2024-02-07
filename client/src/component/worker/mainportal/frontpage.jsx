@@ -17,7 +17,9 @@ const StaticPage = () => {
           </Link>
         </Button>
         <Button variant="contained" color="inherit" style={{ width: '200px', marginBottom: '10px' }}>
+          <Link to="/homepage/attendancesheet">
           Attendance Sheet
+          </Link>
         </Button>
         <Button variant="contained" color="primary" style={{ width: '200px', marginBottom: '10px' }}>
           My Worker Card
