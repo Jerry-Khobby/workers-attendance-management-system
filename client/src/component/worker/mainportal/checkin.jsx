@@ -1,9 +1,16 @@
-import React,{useState} from "react";
-import { Button, TextField, Typography, Container, Paper, Box } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Button,
+  TextField,
+  Typography,
+  Container,
+  Paper,
+  Box,
+} from "@mui/material";
 import Navbar from "./navbar";
 
 const CheckIn = () => {
-  const [checkInData,setCheckInData] = useState({
+  const [checkInData, setCheckInData] = useState({
     user_id: "",
   });
   const [message, setMessage] = useState("");
@@ -12,21 +19,31 @@ const CheckIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/checkin/check_in/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(checkInData),
-      });
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/checkin/check_in/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token a23653c2965c43077a41c74aaade3e236c45fbfc`,
+          },
+          body: JSON.stringify(checkInData),
+        }
+      );
 
       const data = await response.json();
 
       if (response.ok) {
         setSuccessMessage(data.status);
         setMessage("");
+      } else if (response.status === 401) {
+        setMessage("You have already checked in today.");
+        setSuccessMessage("");
+      } else if (response.status === 400) {
+        setMessage("Your details cannot be found in the database.");
+        setSuccessMessage("");
       } else {
-        setMessage(data.error || data.message);
+        setMessage("Error checking in. Please try again.");
         setSuccessMessage("");
       }
     } catch (error) {
@@ -36,7 +53,6 @@ const CheckIn = () => {
     }
   };
 
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCheckInData((prevData) => ({
@@ -44,63 +60,70 @@ const CheckIn = () => {
       [name]: value,
     }));
   };
+
   return (
     <div>
-      <Navbar/>
-    <Container component="main" maxWidth="xs">
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: '100vh',
-        }}
-      >
-        <Paper elevation={3} style={{ padding: "20px", width: "100%" }}>
-          <Typography variant="h5" align="center">
-            CHECKIN
-          </Typography>
-          <form onSubmit={handleSubmit}>
-          {message && (
-              <Typography variant="body1" align="center" style={{ color: "red" }}>
+      <Navbar />
+      <Container component="main" maxWidth="xs">
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "100vh",
+          }}
+        >
+          <Paper elevation={3} style={{ padding: "20px", width: "100%" }}>
+            {message && (
+              <Typography
+                variant="body1"
+                align="center"
+                style={{ color: "red" }}
+              >
                 {message}
               </Typography>
             )}
             {successMessage && (
-              <Typography variant="body1" align="center" style={{ color: "green" }}>
+              <Typography
+                variant="body1"
+                align="center"
+                style={{ color: "green" }}
+              >
                 {successMessage}
               </Typography>
             )}
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              label="ID Number"
-              name="user_id"
-              value={checkInData.user_id}
-              size="small"
-              inputProps={{ maxLength: 10 }}
-              onChange={handleChange}
-              autoFocus
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              style={{ marginTop: "20px" }}
-            >
+            <Typography variant="h5" align="center">
               CHECKIN
-            </Button>
-          </form>
-        </Paper>
-      </Box>
-    </Container>
-
+            </Typography>
+            <form onSubmit={handleSubmit}>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                label="ID Number"
+                name="user_id"
+                value={checkInData.user_id}
+                onChange={handleChange}
+                size="small"
+                inputProps={{ maxLength: 10 }}
+                autoFocus
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                style={{ marginTop: "20px" }}
+              >
+                CHECKIN
+              </Button>
+            </form>
+          </Paper>
+        </Box>
+      </Container>
     </div>
-
   );
 };
 
