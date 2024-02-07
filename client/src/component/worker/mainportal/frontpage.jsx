@@ -6,7 +6,7 @@ const StaticPage = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',height:'100vh',width:'100%' }}>
         <Button variant="contained" color="primary" style={{ width: '200px', marginBottom: '10px' }}>
-        <Link to="/homepage/CheckIn">
+        <Link to="/homepage/checkin">
         Check In
         </Link>
          

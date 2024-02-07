@@ -5,7 +5,7 @@ import LoginPage from "./component/worker/login";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import MainHomePortal from "./component/worker/mainportal/main";
 import { AuthContextProvider } from "./context/authContext";
-import IDInput from "./component/worker/mainportal/idinput";
+import CheckIn from "./component/worker/mainportal/checkin";
 
 
 function App() {
@@ -18,7 +18,7 @@ function App() {
           <Route path="/card_info/:email" element={<WorkersCard />} />{" "}
           <Route path="/login" element={<LoginPage />} />{" "}
           <Route path="/homepage" element={<MainHomePortal/>} />{" "}
-          <Route path="/homepage/:heading" element={<IDInput />}/>{""}
+          <Route path="/homepage/checkin" element={<CheckIn />}/>{""}
 
         </Routes>{" "}
       </BrowserRouter>{" "}
