@@ -8,6 +8,7 @@ import {
   Box,
 } from "@mui/material";
 import Navbar from "./navbar";
+import { Link } from "react-router-dom";
 
 const CheckIn = () => {
   const [checkInData, setCheckInData] = useState({
@@ -36,6 +37,17 @@ const CheckIn = () => {
       if (response.ok) {
         setSuccessMessage(data.status);
         setMessage("");
+        setCheckInData({
+          user_id:"",
+        })
+        //clear messages and reset form after 3seconds 
+        setTimeout(()=>{
+          setSuccessMessage("");
+          setMessage("");
+          setCheckInData({
+            user_id:""
+          })
+        },3000);
       } else if (response.status === 401) {
         setMessage("You have already checked in today.");
         setSuccessMessage("");
@@ -121,6 +133,17 @@ const CheckIn = () => {
               </Button>
             </form>
           </Paper>
+          <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="success"
+                style={{ marginTop: "20px" }}
+              >
+                <Link to="/homepage">
+                HOMEPAGE
+                </Link>
+              </Button>
         </Box>
       </Container>
     </div>
