@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   TextField,
@@ -22,10 +22,28 @@ const AttendanceID = () => {
   });
   const [message, setMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const[attendanceRecords,setAttendanceRecords]=useState([]);
-  const[attendanceName,setAttendanceName]=useState("");
-  const[attendanceID,setAttendanceID]=useState("");
-  const[shownList,setShownList]=useState(false);
+  const [attendanceRecords, setAttendanceRecords] = useState([]);
+  const [attendanceName, setAttendanceName] = useState("");
+  const [attendanceID, setAttendanceID] = useState("");
+  const [shownList, setShownList] = useState(false);
+
+  useEffect(() => {
+    const storedRecords = localStorage.getItem("attendanceRecords");
+    const storedName = localStorage.getItem("attendanceName");
+    const storedID = localStorage.getItem("attendanceID");
+
+    if (storedRecords) {
+      setAttendanceRecords(JSON.parse(storedRecords));
+    }
+
+    if (storedName) {
+      setAttendanceName(storedName);
+    }
+
+    if (storedID) {
+      setAttendanceID(storedID);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,31 +57,33 @@ const AttendanceID = () => {
             Authorization: `Token a23653c2965c43077a41c74aaade3e236c45fbfc`,
           },
           body: JSON.stringify(checkInData),
-
         }
       );
 
       const data = await response.json();
 
-
       if (response.ok) {
         setSuccessMessage(data.status);
-        //next time I will continue from here 
-        setAttendanceRecords(data.attendance_records); 
+        setAttendanceRecords(data.attendance_records);
         setAttendanceName(data.user_name);
         setAttendanceID(data.user_id);
+        localStorage.setItem(
+          "attendanceRecords",
+          JSON.stringify(data.attendance_records)
+        );
+        localStorage.setItem("attendanceName", data.user_name);
+        localStorage.setItem("attendanceID", data.user_id);
         setMessage("");
         setCheckInData({
-          user_id:"",
-        })
-        //clear messages and reset form after 3seconds 
-        setTimeout(()=>{
+          user_id: "",
+        });
+        setTimeout(() => {
           setSuccessMessage("");
           setMessage("");
           setCheckInData({
-            user_id:""
-          })
-        },3000);
+            user_id: "",
+          });
+        }, 3000);
       } else if (response.status === 400) {
         setMessage("User ID is not found in the database");
         setSuccessMessage("");
@@ -84,6 +104,13 @@ const AttendanceID = () => {
       ...prevData,
       [name]: value,
     }));
+  };
+
+
+  const getDayOfWeek = (dateString) => {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const date = new Date(dateString);
+    return days[date.getDay()];
   };
 
   return (
@@ -153,34 +180,34 @@ const AttendanceID = () => {
             color="success"
             style={{ marginTop: "20px" }}
           >
-            <Link to="/homepage">
-              HOMEPAGE
-            </Link>
+            <Link to="/homepage">HOMEPAGE</Link>
           </Button>
         </Box>
       </Container>
       <Container>
-      <TableContainer component={Paper} style={{marginTop:"20px"}}>
-      {(attendanceName && attendanceID) && (
-    <Typography variant="h5">{`${attendanceName} - ${attendanceID}`}</Typography>
-  )}
-        <Table>
-        <TableHead>
-                <TableRow>
-                  <TableCell>Check In</TableCell>
-                  <TableCell>Check Out</TableCell>
+        <TableContainer component={Paper} style={{ marginTop: "20px" }}>
+          {(attendanceName && attendanceID) && (
+            <Typography variant="h5">{`${attendanceName} - ${attendanceID}`}</Typography>
+          )}
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Day</TableCell>
+                <TableCell>Check In</TableCell>
+                <TableCell>Check Out</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {attendanceRecords.map((record) => (
+                <TableRow key={record.id}>
+                  <TableCell>{getDayOfWeek(record.check_in)}</TableCell>
+                  <TableCell>{record.check_in}</TableCell>
+                  <TableCell>{record.check_out}</TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {attendanceRecords.map((record) => (
-                  <TableRow key={record.id}>
-                    <TableCell>{record.check_in}</TableCell>
-                    <TableCell>{record.check_out}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-        </Table>
-      </TableContainer>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Container>
     </div>
   );
