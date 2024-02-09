@@ -8,6 +8,7 @@ import { AuthContextProvider } from "./context/authContext";
 import CheckIn from "./component/worker/mainportal/checkin";
 import CheckOut from "./component/worker/mainportal/checkout";
 import AttendanceID from "./component/worker/mainportal/attendance_id";
+import WorkerEmail from "./component/worker/mainportal/workeremail";
 
 
 function App() {
@@ -23,6 +24,8 @@ function App() {
           <Route path="/homepage/checkin" element={<CheckIn />}/>{""}
           <Route path="/homepage/checkout" element={<CheckOut/>} />{""}
           <Route path="/homepage/attendancesheet" element={<AttendanceID/>}/>{""}
+          <Route path="/homepage/workercard" element={<WorkerEmail/>} />{""}
+          <Route path="/homepage/workercard/:email" element={<WorkersCard/>}/>{""}
         </Routes>{" "}
       </BrowserRouter>{" "}
       </AuthContextProvider>

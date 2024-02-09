@@ -22,7 +22,9 @@ const StaticPage = () => {
           </Link>
         </Button>
         <Button variant="contained" color="primary" style={{ width: '200px', marginBottom: '10px' }}>
+          <Link to="/homepage/workercard">
           My Worker Card
+          </Link>
         </Button>
         <Button variant="contained" color="error" style={{ width: '200px', marginBottom: '10px' }}>
           Delete Me
