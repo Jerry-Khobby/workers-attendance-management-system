@@ -23,6 +23,8 @@ const AttendanceID = () => {
   const [message, setMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const[attendanceRecords,setAttendanceRecords]=useState([]);
+  const[attendanceName,setAttendanceName]=useState("");
+  const[attendanceID,setAttendanceID]=useState("");
   const[shownList,setShownList]=useState(false);
 
   const handleSubmit = async (e) => {
@@ -47,7 +49,9 @@ const AttendanceID = () => {
       if (response.ok) {
         setSuccessMessage(data.status);
         //next time I will continue from here 
-        setAttendanceRecords(data);
+        setAttendanceRecords(data.attendance_records); 
+        setAttendanceName(data.user_name);
+        setAttendanceID(data.user_id);
         setMessage("");
         setCheckInData({
           user_id:"",
@@ -154,6 +158,29 @@ const AttendanceID = () => {
             </Link>
           </Button>
         </Box>
+      </Container>
+      <Container>
+      <TableContainer component={Paper} style={{marginTop:"20px"}}>
+      {(attendanceName && attendanceID) && (
+    <Typography variant="h5">{`${attendanceName} - ${attendanceID}`}</Typography>
+  )}
+        <Table>
+        <TableHead>
+                <TableRow>
+                  <TableCell>Check In</TableCell>
+                  <TableCell>Check Out</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {attendanceRecords.map((record) => (
+                  <TableRow key={record.id}>
+                    <TableCell>{record.check_in}</TableCell>
+                    <TableCell>{record.check_out}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+        </Table>
+      </TableContainer>
       </Container>
     </div>
   );
