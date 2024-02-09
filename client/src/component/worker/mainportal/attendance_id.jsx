@@ -6,6 +6,12 @@ import {
   Container,
   Paper,
   Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from "@mui/material";
 import Navbar from "./navbar";
 import { Link } from "react-router-dom";
@@ -16,7 +22,8 @@ const AttendanceID = () => {
   });
   const [message, setMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const[attendanceRecords,setAttendanceRecords]=useState("");
+  const[attendanceRecords,setAttendanceRecords]=useState([]);
+  const[shownList,setShownList]=useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,8 +47,7 @@ const AttendanceID = () => {
       if (response.ok) {
         setSuccessMessage(data.status);
         //next time I will continue from here 
-        setAttendanceRecords(data.attendance_records);
-        console.log(data.user_name);
+        setAttendanceRecords(data);
         setMessage("");
         setCheckInData({
           user_id:"",
