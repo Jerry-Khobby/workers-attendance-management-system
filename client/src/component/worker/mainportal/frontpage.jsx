@@ -26,9 +26,9 @@ const StaticPage = () => {
           My Worker Card
           </Link>
         </Button>
-        <Button variant="contained" color="error" style={{ width: '200px', marginBottom: '10px' }}>
+    {/*     <Button variant="contained" color="error" style={{ width: '200px', marginBottom: '10px' }}>
           Delete Me
-        </Button>
+        </Button> */}
     </div>
   );
 };
