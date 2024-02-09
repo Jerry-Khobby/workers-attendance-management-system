@@ -113,8 +113,8 @@ const AttendanceID = () => {
   };
 
   const getDayOfWeek = (dateString) => {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const date = new Date(dateString);
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday'];
+    const date =  new Date(dateString.split('T')[0]);
     return days[date.getDay()];
   };
 
